@@ -5,11 +5,9 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.html.*
-import io.ktor.util.raw
 import kotlinx.html.*
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
-import org.w3c.dom.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
