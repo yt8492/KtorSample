@@ -19,8 +19,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-    install(Locations)
-
     routing {
 
         post("/") {
@@ -47,6 +45,7 @@ fun Application.module(testing: Boolean = false) {
                     }
                     """.trimIndent()
                 }.joinToString(",\n", "{", "}")
+            call.response.headers.append("Access-Control-Allow-Origin", "*")
             call.respond(HttpStatusCode.OK, res)
         }
 
@@ -99,9 +98,9 @@ fun Application.module(testing: Boolean = false) {
                                 + "ラフム語"
                             }
                             textArea(classes = "output") {
-                                + ""
-                                id = "JtR_out"
                                 readonly = true
+                                id = "JtR_out"
+                                + ""
                             }
                         }
                     }
