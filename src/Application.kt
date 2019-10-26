@@ -23,39 +23,38 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Post)
         header(HttpHeaders.XForwardedProto)
         header(HttpHeaders.AccessControlAllowHeaders)
-        header(HttpHeaders.ContentType)
         header(HttpHeaders.AccessControlAllowOrigin)
+        header(HttpHeaders.ContentType)
         header("CrossDomain")
         header("X-CSRF-Token")
+        host("*")
         anyHost()
     }
     routing {
 
         post("/") {
             val multipart = call.receiveMultipart()
-            val res = multipart.readAllParts()
-                .map {
-                    """
-                        "name": "${it.name}",
-                        ${
-                    when (it) {
-                        is PartData.FormItem -> {
-                            """
-                                "value": "${it.value}"
-                            """.trimIndent()
-                        }
-                        is PartData.FileItem -> {
-                            """
-                                "file_name": "${it.originalFileName}",
-                                "type": "${it.contentType?.contentType}/${it.contentType?.contentSubtype}"
-                            """.trimIndent()
-                        }
-                        else -> null
+            val res = multipart.readAllParts().joinToString(",\n", "{", "}") {
+                """
+                                "name": "${it.name}",
+                                ${
+                when (it) {
+                    is PartData.FormItem -> {
+                        """
+                                        "value": "${it.value}"
+                                    """.trimIndent()
                     }
+                    is PartData.FileItem -> {
+                        """
+                                        "file_name": "${it.originalFileName}",
+                                        "type": "${it.contentType?.contentType}/${it.contentType?.contentSubtype}"
+                                    """.trimIndent()
                     }
-                    """.trimIndent()
-                }.joinToString(",\n", "{", "}")
-            call.response.headers.append("Access-Control-Allow-Origin", "*")
+                    else -> null
+                }
+                }
+                            """.trimIndent()
+            }
             call.respond(HttpStatusCode.OK, res)
         }
 
