@@ -22,6 +22,7 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Options)
         method(HttpMethod.Post)
         header(HttpHeaders.XForwardedProto)
+        header("*")
         anyHost()
     }
     routing {
