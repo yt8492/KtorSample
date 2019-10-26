@@ -22,7 +22,11 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Options)
         method(HttpMethod.Post)
         header(HttpHeaders.XForwardedProto)
-        header("*")
+        header(HttpHeaders.AccessControlAllowHeaders)
+        header(HttpHeaders.ContentType)
+        header(HttpHeaders.AccessControlAllowOrigin)
+        header("CrossDomain")
+        header("X-CSRF-Token")
         anyHost()
     }
     routing {
