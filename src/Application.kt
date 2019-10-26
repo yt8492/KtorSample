@@ -2,6 +2,8 @@ package com.yt8492
 
 import io.ktor.application.*
 import io.ktor.features.CORS
+import io.ktor.features.DefaultHeaders
+import io.ktor.features.ForwardedHeaderSupport
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.http.*
@@ -18,6 +20,8 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    install(ForwardedHeaderSupport)
+    install(DefaultHeaders)
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Get)
@@ -35,6 +39,7 @@ fun Application.module(testing: Boolean = false) {
         header("CrossDomain")
         header("X-CSRF-Token")
         host("*")
+        this.
         anyHost()
     }
     routing {
