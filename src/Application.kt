@@ -20,7 +20,11 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     install(CORS) {
         method(HttpMethod.Options)
+        method(HttpMethod.Get)
         method(HttpMethod.Post)
+        method(HttpMethod.Put)
+        method(HttpMethod.Delete)
+        method(HttpMethod.Patch)
         header(HttpHeaders.XForwardedProto)
         header(HttpHeaders.AccessControlAllowHeaders)
         header(HttpHeaders.AccessControlAllowOrigin)
