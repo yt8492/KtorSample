@@ -1,14 +1,13 @@
 package com.yt8492
 
 import io.ktor.application.*
+import io.ktor.features.CORS
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.html.*
 import io.ktor.http.content.PartData
 import io.ktor.http.content.readAllParts
-import io.ktor.locations.Locations
-import io.ktor.locations.get
 import io.ktor.request.receiveMultipart
 import kotlinx.html.*
 import kotlinx.css.*
@@ -19,6 +18,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    install(CORS)
     routing {
 
         post("/") {
