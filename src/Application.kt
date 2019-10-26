@@ -5,6 +5,11 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.html.*
+import io.ktor.http.content.PartData
+import io.ktor.http.content.readAllParts
+import io.ktor.locations.Locations
+import io.ktor.locations.get
+import io.ktor.request.receiveMultipart
 import kotlinx.html.*
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
@@ -14,7 +19,37 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    install(Locations)
+
     routing {
+
+        post("/") {
+            val multipart = call.receiveMultipart()
+            val res = multipart.readAllParts()
+                .map {
+                    """
+                        "name": "${it.name}",
+                        ${
+                    when (it) {
+                        is PartData.FormItem -> {
+                            """
+                                "value": "${it.value}"
+                            """.trimIndent()
+                        }
+                        is PartData.FileItem -> {
+                            """
+                                "file_name": "${it.originalFileName}",
+                                "type": "${it.contentType?.contentType}/${it.contentType?.contentSubtype}"
+                            """.trimIndent()
+                        }
+                        else -> null
+                    }
+                    }
+                    """.trimIndent()
+                }.joinToString(",\n", "{", "}")
+            call.respond(HttpStatusCode.OK, res)
+        }
+
         get("/") {
             call.respondHtml {
                 head {
